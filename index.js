@@ -96,20 +96,25 @@ async function run() {
       res.send(result);
     });
 
-    //DELETE method , delete a product
-    app.delete("/product/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: ObjectId(id) };
-      // this option instructs the method to create a document if no documents match the filter
-      const options = { upsert: true };
-      // create a document that sets the plot of the movie
-      const updateDoc = {
-        $set: {
-          plot: `A harvest of random numbers, such as: ${Math.random()}`,
-        },
-      };
-      const result = await movies.updateOne(filter, updateDoc, options);
-    });
+    //PUT method , to update product
+    app.put('/product/:id', async(req,res)=>{
+        const id = req.params.id;
+        console.log(id);
+        const quantity = parseInt(req.body.quantity);
+        console.log(quantity);
+        const filter = {_id: ObjectId(id)};
+        const options = {upsert: true};
+        const updatedProduct = {
+            $set:{
+                quantity
+            }
+        };
+
+        const result = await productCollection.updateOne(filter, updatedProduct, options);
+
+        res.send(result);
+
+    })
 
     //Get method gets all review
     app.get("/reviews", async (req, res) => {

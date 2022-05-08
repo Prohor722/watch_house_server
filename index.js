@@ -68,9 +68,15 @@ async function run(){
 
         //Get method gets all review
         app.get('/reviews',async(req,res)=>{
+            const size = parseInt(req.query.size);
             const query = {};
             const reviews = reviewCollection.find(query);
-            const result = await reviews.toArray(); 
+            if(size){
+                result = await reviews.limit(size).toArray();
+            }
+            else{
+                result = await reviews.toArray(); 
+            }
             res.send(result);
         });
 

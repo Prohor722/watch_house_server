@@ -21,16 +21,19 @@ async function run(){
          await client.connect();
         const productCollection = client.db("watchHouse").collection("products");
         const reviewCollection = client.db("watchHouse").collection("customerReview");
-
-        app.get('/',(req,res)=>{
-            res.send("Watch House server is running...");
-        });
         
-        //Get method gets all Products 
+        //Get method gets all Products or by size limit 
         app.get('/products',async(req,res)=>{
+            const size = req.query.size;
             const query = {};
             const products = productCollection.find(query);
-            const result = await products.toArray(); 
+
+            if(size){
+                result = await products.limit(size).toArray;
+            }
+            else{
+                result = await products.toArray(); 
+            }
             res.send(result);
         });
 
@@ -41,14 +44,12 @@ async function run(){
             const product = await productCollection.findOne(query);
             res.send(product);
         });
-
-        //Get method gets all review
-        app.get('/reviews',async(req,res)=>{
-            const query = {};
-            const reviews = reviewCollection.find(query);
-            const result = await reviews.toArray(); 
+        //POST method add new product
+        app.post('/product', async(req,res)=>{
+            const newProduct = req.body;
+            const result = productCollection.insertOne(newProduct);
             res.send(result);
-        });
+        })
 
     }
     finally{
@@ -57,6 +58,10 @@ async function run(){
 }
 
 run().catch(console.dir);
+
+app.get('/',(req,res)=>{
+    res.send("Watch House server is running...");
+});
 
 app.listen(port,()=>{
     console.log('Port: '+port+" is running");

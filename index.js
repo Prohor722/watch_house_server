@@ -22,14 +22,21 @@ async function run(){
         const productCollection = client.db("watchHouse").collection("products");
         const reviewCollection = client.db("watchHouse").collection("customerReview");
         
-        //Get method gets all Products or by size limit 
+        //Get method gets all Products or by size limit or email
         app.get('/products',async(req,res)=>{
-            const size = req.query.size;
-            const query = {};
+            const email = req.query.email;
+            const size = parseInt(req.query.size);
+            // console.log("req:",req.query.size);
+            // console.log("size:",size);
+            let query = {};
+
+            if(email){
+                query = {email};
+            }
             const products = productCollection.find(query);
 
             if(size){
-                result = await products.limit(size).toArray;
+                result = await products.limit(size).toArray();
             }
             else{
                 result = await products.toArray(); 
@@ -50,6 +57,22 @@ async function run(){
             const result = productCollection.insertOne(newProduct);
             res.send(result);
         })
+
+        //DELETE method , delete a product
+        app.delete('/product/:id', async(req,res)=>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const result = await productCollection.deleteOne(query);
+            res.send(result);
+        })
+
+        //Get method gets all review
+        app.get('/reviews',async(req,res)=>{
+            const query = {};
+            const reviews = reviewCollection.find(query);
+            const result = await reviews.toArray(); 
+            res.send(result);
+        });
 
     }
     finally{

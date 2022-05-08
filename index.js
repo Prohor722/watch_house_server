@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -26,7 +26,7 @@ async function run(){
             res.send("Watch House server is running...");
         });
         
-        //Products 
+        //Get method gets all Products 
         app.get('/products',async(req,res)=>{
             const query = {};
             const products = productCollection.find(query);
@@ -34,12 +34,22 @@ async function run(){
             res.send(result);
         });
 
+        //Get method find single product
+        app.get('/product/:id', async(req,res)=>{
+            const id = req.params.id;
+            const query = {_id : ObjectId(id)};
+            const product = await productCollection.findOne(query);
+            res.send(product);
+        });
+
+        //Get method gets all review
         app.get('/reviews',async(req,res)=>{
             const query = {};
             const reviews = reviewCollection.find(query);
             const result = await reviews.toArray(); 
             res.send(result);
         });
+
     }
     finally{
 

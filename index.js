@@ -10,21 +10,21 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-function verifyJWT(req,res,next){
-    const authHeader =req.headers.authorization;
-    if(!authHeader){
-        return res.status(401).send({message: "Unauthorized access."});
-    }
+// function verifyJWT(req,res,next){
+//     const authHeader =req.headers.authorization;
+//     if(!authHeader){
+//         return res.status(401).send({message: "Unauthorized access."});
+//     }
 
-    const token = authHeader.split(' ')[1];
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(err, decode)=>{
-        if(err){
-            return res.status(403).send({message: 'Access Denied !!'})
-        }
-        console.log('decode:',decode);
-        next();
-    })
-}
+//     const token = authHeader.split(' ')[1];
+//     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(err, decode)=>{
+//         if(err){
+//             return res.status(403).send({message: 'Access Denied !!'})
+//         }
+//         console.log('decode:',decode);
+//         next();
+//     })
+// }
 
 // const uri = `mongodb+srv://${DB_USER}:${DB_PASS}@cluster0.okzxs.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 
